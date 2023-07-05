@@ -9,10 +9,10 @@ class LoginRepository {
   InterceptedClient client;
 
   LoginRepository(this.client);
-  Future<Map<String, dynamic>> fetchCityWeather(
-      {required String email, required String password}) async {
+  Future<Map<String, dynamic>> login(
+      {required String username, required String password}) async {
     Map<String, dynamic> apiResponse;
-    Map<String, dynamic> params = {"email": email, "password": password};
+    Map<String, dynamic> params = {"username": username, "password": password};
     try {
       final response =
           await client.post('${Env.baseUrl}/login'.toUri(), params: params);

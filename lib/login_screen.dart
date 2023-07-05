@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:http_interceptor/http_interceptor.dart';
+import 'package:login_page/api_client.dart';
+import 'package:login_page/common.dart';
 import 'package:sizer_pro/sizer.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -9,6 +12,22 @@ class LoginScreen extends StatefulWidget {
 }
 
 class LoginScreenState extends State<LoginScreen> {
+  LoginRepository repository = LoginRepository(
+    InterceptedClient.build(
+      interceptors: [
+        LoginInterceptor(),
+        LoggerInterceptor(),
+      ],
+      retryPolicy: ExpiredTokenRetryPolicy(),
+    ),
+  );
+
+  @override
+  void dispose() {
+    repository.client.close();
+    super.dispose();
+  }
+
   // For Validating Forms
   final formkey = GlobalKey<FormState>();
 
@@ -146,27 +165,33 @@ class LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  void onLoginPressed(BuildContext context) {
+  void onLoginPressed(BuildContext context) async {
     if (formkey.currentState!.validate()) {
       debugPrint("Validated");
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          backgroundColor: Colors.black,
-          content: Text(
-            'Login In Successful',
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              color: Colors.pink,
-              fontSize: 15.f,
+      var response = await repository.login(
+        username: _username.text,
+        password: _password.text,
+      );
+      if (response['status'] == true) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            backgroundColor: Colors.black,
+            content: Text(
+              'Login In Successful',
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                color: Colors.pink,
+                fontSize: 10.f,
+              ),
+            ),
+            duration: const Duration(seconds: 2),
+            action: SnackBarAction(
+              label: 'Okay',
+              onPressed: () {},
             ),
           ),
-          duration: const Duration(seconds: 2),
-          action: SnackBarAction(
-            label: 'Okay',
-            onPressed: () {},
-          ),
-        ),
-      );
+        );
+      }
     }
   }
 
