@@ -70,25 +70,32 @@ class LoginScreenState extends State<LoginScreen> {
                     ),
                     passwordField(),
                     SizedBox(
-                      height: 1.2.h,
+                      height: 1.h,
                     ),
                     showPasswordRow(),
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: Text(
+                        "Forgot Password",
+                        style: TextStyle(
+                            color: Colors.blue,
+                            fontSize: 8.f,
+                            fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                    SizedBox(
+                      height: 1.h,
+                    ),
                     loginButton(context),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        forgetPasswordButton(),
-                        TextButton(
-                          onPressed: () {
-                            print("Don't have an account pressed");
-                          },
-                          child: Text("Don't have an account?",
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 11.sp,
-                              )),
-                        )
-                      ],
+                    Padding(
+                      padding: EdgeInsets.symmetric(vertical: 2.h),
+                      child: Text(
+                        "Don't have an account?",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 10.f,
+                        ),
+                      ),
                     ),
                     registerButton(),
                   ],
@@ -105,32 +112,16 @@ class LoginScreenState extends State<LoginScreen> {
     return ElevatedButton(
       onPressed: () {},
       style: ElevatedButton.styleFrom(
-        backgroundColor: Colors.pink,
-        elevation: 0,
-        fixedSize: Size(40.w, 4.h),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20.sp),
-        ),
-      ),
+          backgroundColor: Colors.pink,
+          elevation: 0,
+          fixedSize: Size(40.w, 18.f),
+          shape: const StadiumBorder()),
       child: Text(
         "Register Now",
         style: TextStyle(
-          fontSize: 12.sp,
+          fontSize: 10.f,
           color: Colors.white,
         ),
-      ),
-    );
-  }
-
-  TextButton forgetPasswordButton() {
-    return TextButton(
-      onPressed: () {
-        print('Forgot Password Pressed');
-      },
-      child: Text(
-        "Forgot Password",
-        style: TextStyle(
-            color: Colors.blue, fontSize: 11.sp, fontWeight: FontWeight.bold),
       ),
     );
   }
@@ -139,16 +130,16 @@ class LoginScreenState extends State<LoginScreen> {
     return ElevatedButton(
       onPressed: () => onLoginPressed(context),
       style: ElevatedButton.styleFrom(
-        backgroundColor: Colors.blue,
-        fixedSize: Size(40.w, 4.h),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20.sp),
-        ),
-      ),
+          padding: EdgeInsets.symmetric(
+            vertical: 3.f,
+            horizontal: 10.w,
+          ),
+          backgroundColor: Colors.blue,
+          shape: const StadiumBorder()),
       child: Text(
         "Login",
         style: TextStyle(
-          fontSize: 12.sp,
+          fontSize: 10.f,
           color: Colors.white,
         ),
       ),
@@ -157,7 +148,7 @@ class LoginScreenState extends State<LoginScreen> {
 
   void onLoginPressed(BuildContext context) {
     if (formkey.currentState!.validate()) {
-      print("Validated");
+      debugPrint("Validated");
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           backgroundColor: Colors.black,
@@ -166,7 +157,7 @@ class LoginScreenState extends State<LoginScreen> {
             style: TextStyle(
               fontWeight: FontWeight.bold,
               color: Colors.pink,
-              fontSize: 15.sp,
+              fontSize: 15.f,
             ),
           ),
           duration: const Duration(seconds: 2),
@@ -182,46 +173,42 @@ class LoginScreenState extends State<LoginScreen> {
   Row showPasswordRow() {
     return Row(
       children: [
-        SizedBox(
-          width: 15.w,
-        ),
-        Checkbox(
-          value: checkboxvalue,
-          focusColor: Colors.pink,
-          hoverColor: Colors.pink,
-          fillColor: MaterialStateColor.resolveWith(
-            (states) {
-              if (states.contains(MaterialState.selected)) {
-                return Colors.pink; // the color when checkbox is selected;
-              }
-              return Colors.white; //the color when checkbox is unselected;
+        Padding(
+          padding: EdgeInsets.fromLTRB(10.f, 0, 5.sp, 0),
+          child: Checkbox(
+            value: checkboxvalue,
+            focusColor: Colors.pink,
+            hoverColor: Colors.pink,
+            fillColor: MaterialStateColor.resolveWith(
+              (states) {
+                if (states.contains(MaterialState.selected)) {
+                  return Colors.pink; // the color when checkbox is selected;
+                }
+                return Colors.white; //the color when checkbox is unselected;
+              },
+            ),
+            onChanged: (value) {
+              setState(() {
+                checkboxvalue = value!;
+              });
             },
+            checkColor: Colors.white,
           ),
-          onChanged: (value) {
-            setState(() {
-              checkboxvalue = value!;
-            });
-          },
-          checkColor: Colors.white,
         ),
         Text(
           "Show Password",
           style: TextStyle(
-            color: Colors.pink,
-            fontWeight: FontWeight.bold,
-            fontSize: 13.sp,
+            color: Colors.purple,
+            fontSize: 8.f,
           ),
         ),
       ],
     );
   }
 
-  Container passwordField() {
-    return Container(
-      height: 5.h,
-      padding: EdgeInsets.symmetric(
-        horizontal: 20.sp,
-      ),
+  Padding passwordField() {
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 10.f),
       child: TextFormField(
         controller: _password,
         validator: (value) {
@@ -238,21 +225,20 @@ class LoginScreenState extends State<LoginScreen> {
         },
         style: TextStyle(
           color: Colors.white,
-          fontWeight: FontWeight.bold,
-          fontSize: 15.sp,
-          height: 2.2,
+          fontSize: 10.f,
         ),
         obscureText: !checkboxvalue,
         decoration: InputDecoration(
           icon: Icon(
             Icons.lock,
-            size: 21.sp,
+            size: 15.sp,
             color: Colors.white,
           ),
+          isDense: true,
           hintText: " Password",
           hintStyle: TextStyle(
             color: Colors.white,
-            fontSize: 15.sp,
+            fontSize: 10.f,
           ),
           enabledBorder: OutlineInputBorder(
             borderSide: const BorderSide(color: Colors.white, width: 1),
@@ -263,11 +249,10 @@ class LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  Container usernameField() {
-    return Container(
-      height: 5.h,
+  Padding usernameField() {
+    return Padding(
       padding: EdgeInsets.symmetric(
-        horizontal: 20.sp,
+        horizontal: 10.f,
       ),
       child: TextFormField(
         controller: _username,
@@ -285,20 +270,19 @@ class LoginScreenState extends State<LoginScreen> {
         },
         style: TextStyle(
           color: Colors.white,
-          fontWeight: FontWeight.bold,
-          fontSize: 15.sp,
-          height: 2.2,
+          fontSize: 10.f,
         ),
         decoration: InputDecoration(
           icon: Icon(
             Icons.person,
-            size: 21.sp,
+            size: 15.f,
             color: Colors.white,
           ),
+          isDense: true,
           hintText: " Enter Username",
           hintStyle: TextStyle(
             color: Colors.white,
-            fontSize: 15.sp,
+            fontSize: 10.f,
           ),
           enabledBorder: OutlineInputBorder(
             borderSide: const BorderSide(color: Colors.white, width: 1),
