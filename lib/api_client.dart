@@ -1,7 +1,41 @@
+import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 
 import 'package:http_interceptor/http_interceptor.dart';
+import 'package:login_page/env.dart';
+
+class LoginRepository {
+  InterceptedClient client;
+
+  LoginRepository(this.client);
+  Future<Map<String, dynamic>> fetchCityWeather(
+      {required String email, required String password}) async {
+    Map<String, dynamic> apiResponse;
+    Map<String, dynamic> params = {"email": email, "password": password};
+    try {
+      final response =
+          await client.post('${Env.baseUrl}/login'.toUri(), params: params);
+      if (response.statusCode == 200) {
+        apiResponse = jsonDecode(response.body);
+      } else {
+        return Future.error(
+          'Error while fetching.',
+          StackTrace.fromString(response.body),
+        );
+      }
+    } on SocketException {
+      return Future.error('No Internet connection 😑');
+    } on FormatException {
+      return Future.error('Bad response format 👎');
+    } on Exception catch (error) {
+      log(error.toString());
+      return Future.error('Unexpected error 😢');
+    }
+
+    return apiResponse;
+  }
+}
 
 class LoginInterceptor extends InterceptorContract {
   @override
